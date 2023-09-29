@@ -1,4 +1,14 @@
+'''
+The problem statement
 
+Generate a complex signal which is a sum of three different frequencies. 
+Select the middle frequency as 100 times your class number, say(59) 
+Select the other frequencies as half and double of the middle frequency. Display this waveform. 
+Select a suitable sampling rate using Nyquist theorem and generate 8/16 samples from this signal. 
+Display the samples. 
+Find the DTFT and DFT of these samples.
+
+'''
 from DSP_functions import ct_complex_exponential,sampling_signal_time_domain,dtft,dft
 
 
