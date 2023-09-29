@@ -392,6 +392,135 @@ def dft(sam_sig,
 
     elif values != False:
         raise ValueError(f'values should be of type bool....expected <bool> but recieved <{type(values)}>')
+
+
+
+
+
+def fft(signal,
+        N,
+        plot = 1,
+        values = 0):
+    
+    '''
+        Find and plot the spectrums of DFT using radix-2 fft algorithm
+
+        Arguments:
+        
+            signal          : (list) list of the signal values whoose DFT is to be found using FFT algorithm
+            
+            N               : (int)  N in N point DFT (number of points)
+                                        ** if N > length of signal --> values upto N from the signal is considered
+                                        ** if N < length of signal --> values are paddes with zeros until N = length of signal
+                                        
+            plot            : (bool) If True displays the signal plots - magnitude,phase,real and imaginary spectrums
+                
+            values          : (bool) If True displays the signal values at the time points ,their magnitude,phase,real and imaginary spectrum values 
+            
+            
+        returns a DICTIONARY containing these values (NB: returns only if values = True)
+                                        
+                keys :  "fft_values"         
+                        "magnitude_spectrum"
+                        "phase_spectrum"
+                        "real_spectrum"
+                        "imaginary_spectrum"                                     
+    ''' 
+             
+    
+    
+    
+    
+    
+    import numpy as np 
+    
+    def FFT(signal,N):
+        
+        import numpy as np
+        
+        if N < len(signal):
+            signal = signal[:N]
+            print(f'signal:{signal}')
+            
+        elif N > len(signal):
+            while(N != len(signal)):
+                signal.append(0)
+                
+        
+        if N == 1:
+            return signal
+            
+        else:
+            even_sig = FFT(signal[::2],len(signal[::2]))
+            odd_sig = FFT(signal[1::2],len(signal[1::2]))
+                
+            twiggle = np.exp(-2j*np.pi*np.arange(N)/N)
+            fft_values = np.concatenate( [even_sig + odd_sig*twiggle[:int(N/2)], 
+                                        even_sig - odd_sig*twiggle[:int(N/2)]] )
+        
+                
+            return fft_values
+    
+    
+    
+    if plot == True:
+        
+        import matplotlib.pyplot as plt
+        fft_values = FFT(signal,N)
+        
+        k = np.arange(0,len(fft_values))
+        
+        fig = plt.figure(figsize=(10,7))
+        fig.suptitle(f'FFT of the Signal')
+
+        ax1 = fig.add_subplot(2,2,1)
+        ax1.stem(k,np.absolute(fft_values))
+        ax1.set_title("Magnitude Spectrum")
+        ax1.set_xlabel("k")
+        ax1.set_ylabel("Magnitude")
+
+        ax2 = fig.add_subplot(2,2,2)
+        ax2.stem(k,np.angle(fft_values))
+        ax2.set_title("Phase Spectrum")
+        ax2.set_xlabel("k")
+        ax2.set_ylabel("Phase")
+
+        ax3 = fig.add_subplot(2,2,3)
+        ax3.stem(k,np.real(fft_values))
+        ax3.set_title("Real Spectrum")
+        ax3.set_xlabel("k")
+        ax3.set_ylabel("Real Part")
+
+        ax4 = fig.add_subplot(2,2,4)
+        ax4.stem(k,np.imag(fft_values))
+        ax4.set_title("Imaginary Spectrum")
+        ax4.set_xlabel("k")
+        ax4.set_ylabel("Imaginary Part")
+
+
+        plt.subplots_adjust(left=0.1,   # Adjust the left margin
+                            right=0.9,  # Adjust the right margin
+                            bottom=0.1, # Adjust the bottom margin
+                            top=0.9,    # Adjust the top margin
+                            wspace=0.3, # Adjust the horizontal spacing between subplots
+                            hspace=0.5)  # Adjust the vertical spacing between subplots
+
+        plt.show()
+        
+    elif plot != False:
+        raise ValueError(f'plot should be of type bool....expected <bool> but recieved <{type(plot)}>')
+    
+    if values == True:  
+            fft_values = FFT(signal,N)
+            val = {'fft_values': np.array(fft_values),
+                   'magnitude_spectrum': np.absolute(fft_values),
+                   'phase_spectrum':np.angle(fft_values),
+                   'real_spectrum':np.real(fft_values),
+                   'imaginary_spectrum':np.imag(fft_values)}
+            return  val  
+            
+    elif values != False:
+        raise ValueError(f'values should be of type bool....expected <bool> but recieved <{type(values)}>') 
     
     
 
